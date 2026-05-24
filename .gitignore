@@ -10,3 +10,8 @@ override.tf.json
 *_override.tf.json
 # Ignore crash logs
 crash.log
+.terraform.lock.hcl
+terraform.tfstate
+terraform.tfstate.backup
+terraform.tfstate
+terraform.tfstate.backup
