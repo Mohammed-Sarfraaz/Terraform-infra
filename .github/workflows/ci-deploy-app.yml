@@ -1,10 +1,13 @@
-name: Build and Deploy App
+name: CI/CD Build and Deploy App
 
 on:
+  push:
+    branches:
+      - main
   workflow_dispatch:
 
 jobs:
-  deploy:
+  build-and-deploy:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -14,25 +17,27 @@ jobs:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
       - name: Setup Docker Buildx
         uses: docker/setup-buildx-action@v3
-      - name: Build and push image to ACR
-        env:
-          ACR_NAME: ${{ secrets.ACR_NAME }}
+      - name: Login to ACR
         run: |
           az acr login --name "$ACR_NAME"
-          IMAGE="$ACR_NAME.azurecr.io/simple-webapp:latest"
-          docker build -t "$IMAGE" app
-          docker push "$IMAGE"
+        env:
+          ACR_NAME: ${{ secrets.ACR_NAME }}
+      - name: Build and push image
+        uses: docker/build-push-action@v5
+        with:
+          context: ./app
+          file: ./app/Dockerfile
+          push: true
+          tags: ${{ secrets.ACR_NAME }}.azurecr.io/simple-webapp:latest
       - name: Get AKS credentials
+        run: |
+          az aks get-credentials --resource-group "$AKS_RESOURCE_GROUP" --name "$AKS_CLUSTER_NAME"
         env:
           AKS_RESOURCE_GROUP: ${{ secrets.AKS_RESOURCE_GROUP }}
           AKS_CLUSTER_NAME: ${{ secrets.AKS_CLUSTER_NAME }}
-        run: |
-          az aks get-credentials --resource-group "$AKS_RESOURCE_GROUP" --name "$AKS_CLUSTER_NAME"
       - name: Render deployment manifest
-        env:
-          ACR_NAME: ${{ secrets.ACR_NAME }}
         run: |
-          IMAGE="$ACR_NAME.azurecr.io/simple-webapp:latest"
+          IMAGE="${{ secrets.ACR_NAME }}.azurecr.io/simple-webapp:latest"
           python -c "import pathlib, os; raw = pathlib.Path('kubernetes/deployment.yaml').read_text(); output = raw.replace('REPLACE_WITH_ACR/simple-webapp:latest', os.environ['IMAGE']); pathlib.Path('kubernetes/rendered-deployment.yaml').write_text(output)"
       - name: Deploy web app to AKS
         run: |

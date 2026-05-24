@@ -1,17 +1,20 @@
-﻿# Ignore local Terraform files
+﻿# Terraform
 .terraform/
 *.tfstate
 *.tfstate.backup
 tfplan
-# Ignore local override files
 override.tf
 override.tf.json
 *_override.tf
 *_override.tf.json
-# Ignore crash logs
 crash.log
 .terraform.lock.hcl
-terraform.tfstate
-terraform.tfstate.backup
-terraform.tfstate
-terraform.tfstate.backup
+
+# Node.js
+app/node_modules/
+npm-debug.log
+yarn-error.log
+
+# Local artifacts
+.DS_Store
+.env

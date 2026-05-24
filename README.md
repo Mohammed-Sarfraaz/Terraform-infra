@@ -235,7 +235,8 @@ Suggested workflows:
 .github/workflows/
 ├── terraform-plan.yml
 ├── terraform-apply.yml
-└── deploy-app.yml
+├── deploy-app.yml
+└── ci-deploy-app.yml
 Documentation Requirements
 
 Copilot-generated code should include:
@@ -270,6 +271,31 @@ Documentation
 Outputs and variables
 Example tfvars configuration
 Example Terraform Variable Definitions
+
+Web Application Deployment
+
+This repository now includes a simple Node.js web app in `app/`, a Dockerfile, and deployment scripts to build and push the image to ACR, then deploy it to AKS.
+
+Deployment steps:
+
+1. Deploy infrastructure:
+   ```powershell
+   terraform init
+   terraform apply -auto-approve
+   ```
+2. Build and push the app to ACR:
+   ```powershell
+   .\scripts\deploy-app.ps1
+   ```
+3. View the app:
+   - Use `kubectl get svc -n demo` for the external IP
+   - Open the LoadBalancer address in a browser
+
+CI/CD notes:
+
+- The GitHub Actions workflow `.github/workflows/deploy-app.yml` provides a manual deploy path through the GitHub UI.
+- The GitHub Actions workflow `.github/workflows/ci-deploy-app.yml` runs on push to `main`, builds the Docker image, pushes it to ACR, and deploys to AKS.
+- Set `AZURE_CREDENTIALS`, `ACR_NAME`, `AKS_RESOURCE_GROUP`, and `AKS_CLUSTER_NAME` in GitHub Secrets before running either workflow.
 variable "location" {
   description = "Azure region"
   type        = string
