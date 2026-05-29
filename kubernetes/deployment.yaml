@@ -13,10 +13,10 @@ spec:
   template:
     metadata:
       labels:
-        app: simple-webapp
+        app: simple-webappyes
     spec:
       containers:
         - name: webapp
-          image: REPLACE_WITH_ACR/simple-webapp:latest
+          image: acregaksdemodev.azurecr.io/simple-webapp:latest
           ports:
             - containerPort: 80

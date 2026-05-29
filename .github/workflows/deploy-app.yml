@@ -33,7 +33,7 @@ jobs:
           ACR_NAME: ${{ secrets.ACR_NAME }}
         run: |
           IMAGE="$ACR_NAME.azurecr.io/simple-webapp:latest"
-          python -c "import pathlib, os; raw = pathlib.Path('kubernetes/deployment.yaml').read_text(); output = raw.replace('REPLACE_WITH_ACR/simple-webapp:latest', os.environ['IMAGE']); pathlib.Path('kubernetes/rendered-deployment.yaml').write_text(output)"
+          python -c "import pathlib, os; raw = pathlib.Path('kubernetes/deployment.yaml').read_text(); output = raw.replace('acregaksdemodev.azurecr.io/simple-webapp:latest', os.environ['IMAGE']); pathlib.Path('kubernetes/rendered-deployment.yaml').write_text(output)"
       - name: Deploy web app to AKS
         run: |
           kubectl apply -f kubernetes/namespace.yaml

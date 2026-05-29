@@ -18,7 +18,7 @@ module "networking" {
 
 module "acr" {
   source              = "./modules/acr"
-  name                = "acr${replace(local.prefix, "-", "") }"
+  name                = "acreg${replace(local.prefix, "-", "") }"
   resource_group_name = module.resource_group.name
   location            = var.location
   sku                 = "Standard"
