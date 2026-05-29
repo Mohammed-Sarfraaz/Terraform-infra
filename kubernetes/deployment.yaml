@@ -15,8 +15,6 @@ spec:
       labels:
         app: simple-webapp
     spec:
-      imagePullSecrets:
-        - name: acr-secret
       containers:
         - name: webapp
           image: REPLACE_WITH_ACR/simple-webapp:latest
