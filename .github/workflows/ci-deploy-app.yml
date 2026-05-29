@@ -43,8 +43,9 @@ jobs:
           AKS_RESOURCE_GROUP: ${{ secrets.AKS_RESOURCE_GROUP }}
           AKS_CLUSTER_NAME: ${{ secrets.AKS_CLUSTER_NAME }}
       - name: Render deployment manifest
+        env:
+          IMAGE: ${{ secrets.ACR_NAME }}.azurecr.io/simple-webapp:latest
         run: |
-          IMAGE="${{ secrets.ACR_NAME }}.azurecr.io/simple-webapp:latest"
           python -c "import pathlib, os; raw = pathlib.Path('kubernetes/deployment.yaml').read_text(); output = raw.replace('REPLACE_WITH_ACR/simple-webapp:latest', os.environ['IMAGE']); pathlib.Path('kubernetes/rendered-deployment.yaml').write_text(output)"
       - name: Deploy web app to AKS
         run: |
