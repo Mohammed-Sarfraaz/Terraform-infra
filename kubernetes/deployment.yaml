@@ -13,7 +13,7 @@ spec:
   template:
     metadata:
       labels:
-        app: simple-webappyes
+        app: simple-webapp
     spec:
       containers:
         - name: webapp
