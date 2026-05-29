@@ -37,10 +37,9 @@ jobs:
           az aks get-credentials --resource-group "$AKS_RESOURCE_GROUP" --name "$AKS_CLUSTER_NAME"
       - name: Render deployment manifest
         env:
-          ACR_NAME: ${{ secrets.ACR_NAME }}
           IMAGE: ${{ secrets.ACR_NAME }}.azurecr.io/simple-webapp:latest
         run: |
-          python -c "import pathlib, os; raw = pathlib.Path('kubernetes/deployment.yaml').read_text(); output = raw.replace('acregaksdemodev.azurecr.io/simple-webapp:latest', os.environ['IMAGE']); pathlib.Path('kubernetes/rendered-deployment.yaml').write_text(output)"
+          python -c "import pathlib, os; raw = pathlib.Path('kubernetes/deployment.yaml').read_text(); output = raw.replace('REPLACE_WITH_ACR/simple-webapp:latest', os.environ['IMAGE']); pathlib.Path('kubernetes/rendered-deployment.yaml').write_text(output)"
       - name: Deploy web app to AKS
         run: |
           kubectl apply -f kubernetes/namespace.yaml
