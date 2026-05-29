@@ -24,10 +24,11 @@ jobs:
       - name: Setup Docker Buildx
         uses: docker/setup-buildx-action@v3
       - name: Login to ACR
-        run: |
-          az acr login --name "$ACR_NAME"
         env:
           ACR_NAME: ${{ secrets.ACR_NAME }}
+        run: |
+          TOKEN=$(az acr login --name "$ACR_NAME" --expose-token --output tsv --query accessToken)
+          echo $TOKEN | docker login -u 00000000-0000-0000-0000-000000000000 --password-stdin "$ACR_NAME.azurecr.io"
       - name: Build and push image
         uses: docker/build-push-action@v5
         with:
