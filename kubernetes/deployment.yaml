@@ -17,6 +17,6 @@ spec:
     spec:
       containers:
         - name: webapp
-          image: acregaksdemodev.azurecr.io/simple-webapp:latest
+          image: REPLACE_WITH_ACR/simple-webapp:latest
           ports:
             - containerPort: 80
